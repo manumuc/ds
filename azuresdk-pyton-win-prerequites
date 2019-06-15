@@ -1,20 +1,15 @@
 # https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/an-intro-to-using-python-with-microsoft-azure.pdf
 # https://www.microsoft.com/en-us/sql-server/sql-server-downloads-free-trial
 # Prerequisites: 
-# 1. Download and install the Python Azure SDK
-
-# 2. Need to have a Microsoft Azure account. 
-# Help For "Using Python with Microsoft Azure: Python Developer Center"
-
-# install Python - i.e. with Anaconda or conda, that installs pyton 3, 2.7, Jupyter and popular libraries
+# 0. install Python - i.e. with Anaconda or conda, that installs pyton 3, 2.7, Jupyter and popular libraries
 #   https://www.anaconda.com/distribution/
 #   or directly: https://www.python.org/downloads/ (python 3.x.x, i.e. as of writing version 3.7.3 19/06/11;  2.7 is old!)
 #   
-# make sure that pip is the latest
+# 0.1 make sure that pip is the latest
 #   cd \program files\python\
 #   python.exe -m pip install --upgrade pip
 #
-# Jupyter Notebook formerly IPython Notebooks - web based developing tool http://ipython.org/notebook.html
+# (optional) Jupyter Notebook formerly IPython Notebooks - web based developing tool http://ipython.org/notebook.html
 # to run it locally install it via python pip
 #   python -m pip install jupyther
 # run the notebook locally and open browser with http://localhost:8888 (server listens to localhost port 8888)
@@ -23,6 +18,26 @@
 # open specific ipynb:
 #   jupyter notebook test.ipynb
 # use web based trial: https://try.jupyter.org/
+
+# 1. Download and install the Python Azure SDK
+# https://docs.microsoft.com/en-us/python/azure/python-sdk-azure-install?view=azure-python
+# 1.1 install using pip
+#    pip install azure 
+# 1.2 install from GIT
+#   git clone git://github.com/Azure/azure-sdk-for-python.git
+#   cd azure-sdk-for-python
+#   python setup.py install
+
+# 2. Need to have a Microsoft Azure account. 
+# Help For "Using Python with Microsoft Azure: Python Developer Center"
+
+# 2.1. Authenticate with Azure
+#    Store the credentials securely in a configuration file, the registry, or Azure KeyVault.
+#    The following example uses a Service Principal for authentication.
+#   Note: To create a service principal with the Azure CLI, use the following command:
+#      az ad sp create-for-rbac --name "MY-PRINCIPAL-NAME" --password "STRONG-SECRET-PASSWORD"
+
+
 
 # Using Python to create VMs
 
