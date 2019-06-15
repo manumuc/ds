@@ -1,4 +1,10 @@
-    # 1. Create a resource group if there is no available  with the name: ds-lx-ngnx  
+# review following web sites:
+# Ports needed: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=4&cad=rja&uact=8&ved=2ahUKEwjMh5exm-viAhXDbFAKHcW-BC8QFjADegQIBBAB&url=https%3A%2F%2Fhelp.deepsecurity.trendmicro.com%2FManage-Components%2Fports.html&usg=AOvVaw1mmRG18FtvBsABi5ZhHN3c
+# DSaaS Best practice Guide: https://help.deepsecurity.trendmicro.com/Deep_Security_as_a_Service_Best_Practice_Guide.pdf
+# DSaaS Administration Guide: https://help.deepsecurity.trendmicro.com/Deep_Security_as_a_Service_Administration_Guide.pdf
+
+
+# 1. Create a resource group if there is no available  with the name: ds-lx-ngnx  
     az group create --name ds-lx-ngnx --location westeurope 
     # Note the Public IP address 
     
