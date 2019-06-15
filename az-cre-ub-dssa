@@ -1,0 +1,87 @@
+    # 1. Create a resource group if there is no available  with the name: ds-lx-ngnx  
+    az group create --name ds-lx-ngnx --location westeurope 
+    # Note the Public IP address 
+    
+    # 2. Creae Ubuntu latest varserion Virtual Machine in newly created resource group with the usernamme 
+    # VM: Ubuntu: UbuntuLTS, vmname: lx-ngnx01, in resourcegroup: ds-lx-ngnx, admin-username: azureuuser
+    az vm create --resource-group ds-lx-ngnx --name lx-ngnx01 --image UbuntuLTS --admin-username azureuser  --generate-ssh-keys 
+ 
+ # Exampleoutput:   
+  "fqdns": "", 
+  "id": "/subscriptions/7a7e0c19-14aa-48fe-9f25-a609942fdb9f/resourceGroups/app2-resgroup/providers/Microsoft.Compute/virtualMachines/lx-ngnx01", 
+  "location": "westeurope", 
+  "macAddress": "00-0D-3A-21-B7-7A", 
+  "powerState": "VM running", 
+  "privateIpAddress": "10.0.0.4", 
+  "publicIpAddress": "23.97.173.8", 
+  "resourceGroup": "ds-lx-ngnx", 
+  "zones": "" 
+
+# 3. Change the settings of the Firewall in Azure for the newly created VM
+# Open port to 80, 443 and 4118 from outside (by default only SSL: 22 is allowed
+# with vm open-port
+az vm open-port --port 80 --resource-group ds-lx-ngnx --name lx-ngnx01 --priority 610
+az vm open-port --port 443 --resource-group ds-lx-ngnx --name lx-ngnx01 --priority 611
+az vm open-port --port 4118 --resource-group ds-lx-ngnx --namelx-ngnx01 --priority 612
+# with network nsg
+az vm open-port -–port 4118,80 --resource-group group ds-lx-ngnx --name lx-ngnx01 
+az network nsg rule create --name allow-in-80   --resource-group ds-lx-ngnx group ds-lx-ngnx --priority 610 --direction Inbound --access Allow --source-address-prefixes '*' --source-port-ranges '*' --destination-address-prefixes '*' --destination-port-ranges 80   --protocol Tcp 
+az network nsg rule create --name allow-in-443  --resource-group ds-lx-ngnx group ds-lx-ngnx --priority 611 --direction Inbound --access Allow --source-address-prefixes '*' --source-port-ranges '*' --destination-address-prefixes '*' --destination-port-ranges 443  --protocol Tcp 
+az network nsg rule create --name allow-in-4118 --resource-group ds-lx-ngnx group ds-lx-ngnx --priority 612 --direction Inbound --access Allow --source-address-prefixes '*' --source-port-ranges '*' --destination-address-prefixes '*' --destination-port-ranges 4118 --protocol Tcp 
+
+# 4. Log on to the newly created vm
+# Connect to virtual machine by ssh 
+#
+ssh azureuser@23.97.173.8 
+
+
+# 5. Disable ipv6: 
+# 5.1 change group settings:
+sudo sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="maybe-ubiquity"/GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1 maybe-ubiquity"/' /etc/default/grub 
+sudo sed -i -e 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="ipv6.disable=1"/' /etc/default/grub sudo update-grub 
+# 5.2 change settings in - add the below lines at the end of the file  /etc/sysctl.conf 
+sudo vi /etc/sysctl.conf 
+net.ipv6.conf.all.disable_ipv6=1 
+net.ipv6.conf.default.disable_ipv6=1 
+net.ipv6.conf.lo.disable_ipv6=1 
+sudo sysctl -p 
+
+# 6. Install Addtional components
+# 6.1 Web Server – NGINX 
+sudo apt-get –y update 
+sudo apt-get –y install nginx 
+# 6.2 Install unzip (for unzipping DSAgent if packet is downloaded via 
+Sudo apt-get install unzip 
+
+# 7. Install and Activate DS
+# 7.1  Download the DS agent form (11.3 for SaaS) from  
+wget https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-Ubuntu_18.04-11.3.0-292.x86_64.zip --no-check-certificate 
+# dl from DaaS Web console: 
+curl https://app.deepsecurity.trendmicro.com/software/agent/Ubuntu_18.04/x86_64/ -o /tmp/agent.deb $CURLOPTIONS --insecure
+#   -o /tmp/agent.deb --silent --tlsv1.2 
+wget https://app.deepsecurity.trendmicro.com:443/software/agent//Ubuntu/x86_64/  --no-check-certificate 
+
+  -o /tmp/agent.deb --silent --tlsv1.2  
+ 
+curl
+#Unzip agent:  
+unzip Agent-Ubuntu_18.04-11.3.0-292.x86_64.zip 
+#Install agent 
+sudo dpkg -i Agent-Core-Ubuntu_18.04-11.3.0-292.x86_64.deb 
+# Activate DS-Agent with SaaS 
+# can be found under /opt/ds_agent/
+sudo /opt/ds_agent/dsa_control -r 
+# activate agent
+sudo /opt/ds_agent/dsa_control -a dsm://agents.deepsecurity.trendmicro.com:443/ "tenantID:0A3F3A75-76FF-42F9-AE32-D0AD97C7A124" "token:BDAEE3D0-3EE0-9C52-200D-FB60E52BB86A" "policyid:67" 
+# send heartbeat
+sudo /opt/ds_agent/dsa_control -m 
+
+#Exit the ssh session by typing "exit"
+exit
+
+#Use the bowser of your choice to access the new web serve by IP 
+http://23.97.173.8 
+
+#Cleanup Resource   
+az group delete –-name ds-lx-ngnx  
+ 
