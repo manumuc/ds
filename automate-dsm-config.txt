@@ -1,0 +1,7 @@
+
+# After installation
+# since 11.1: Activate MDR Tab; for disabling fuse -value false
+.\dsm_c -action changesetting -name settings.configuration.enableManagedDetectionResponse -value true
+     
+# 12.0: autoomatic Agent update while activation (Lx only); for disabling use -value false
+dsm_c -action changesetting -name settings.configuration.enableAutomaticalAgentUpgrade -value true 
