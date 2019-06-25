@@ -1,3 +1,11 @@
+# see also: 
+# https://help.deepsecurity.trendmicro.com/11_0/on-premise/command-line-utilities.html
+#
+# Note: The dsm_c command returns an integer value that indicates whether the command executed successfully. The following values can be returned:
+# 0: Successful execution
+#-1: Failure of an unknown nature, for example corrupt software installation.
+# 1: Failure during execution, for example the database is not accessible.
+# 2: Invalid arguments were provided.
 
 # After installation
 # since 11.1: Activate MDR Tab; for disabling fuse -value false
@@ -5,3 +13,28 @@
      
 # 12.0: autoomatic Agent update while activation (Lx only); for disabling use -value false
 dsm_c -action changesetting -name settings.configuration.enableAutomaticalAgentUpgrade -value true 
+
+#11.0: Add a trusted certificate PURPOSE refer to the type of connections the certificate will be used for
+dsm_c -action addcert purpose PURPOSE -cert cert 
+
+#11.0 add a private cloud provider region
+dsm_c -action addregion  -region REGION -display DISPLAY -endpoint ENDPOINT
+
+#11.0 Get version View information about the current software version, the database schema version, or both	dsm_c -action versionget
+dsm_c -action versionget	 [-software] [-dbschema]
+
+#11.0 Set Deep Security Manager port(s)	
+dsm_c -action setports [-managerPort port] [-heartbeatPort port]
+
+
+
+
+# Agent Linux
+#
+# Check CPU usage and RAM usage
+top
+# List agent Task, check ds_agent processes or services are running
+ps -ef|grep ds_agent
+# Restart an agent on Linux
+service ds_agent restart
+/etc/init.d/ds_agent restart
