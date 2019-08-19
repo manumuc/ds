@@ -1,3 +1,17 @@
+""" for using curl: 
+curl -X POST https://!!!!!!-----set your host!!!!!!!!!!!!!!!/api/firewallrules/search \
+-H 'Cache-Control: no-cache' \
+-H 'api-secret-key: !!!!!!-----set your ap-key!!!!!!!!!!!!!!!' \
+-H 'api-version: v1' \
+-H 'content-type: application/json' \
+-d '{
+  "searchCriteria": [{
+    "idTest":"equal",
+    "idValue":3
+  }]
+}'
+"""
+
 import deepsecurity as api
 from deepsecurity.rest import ApiException as api_exception
 
